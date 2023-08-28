@@ -20,6 +20,12 @@
 .LINK
     https://github.com/plusreed/MsTeamsLastFmStatus
 #>
+
+param(
+    [Parameter(Mandatory = $true)]
+    [string]$LastFmUser
+)
+
 Import-Module Microsoft.Graph.Beta.Users.Actions
 
 # Check if env var is set
@@ -37,9 +43,8 @@ $consts = @{
     # {2} = album name
     tmplLastFmStatus = "$([System.Char]::ConvertFromUtf32(127926)) Now playing:<br>{1} - {0} [{2}]"
 
-    # your last.fm username
-    # todo: put this in an env var or make it a parameter
-    lastFmUser       = "your_username_here"
+    # your last.fm username, passed in as -LastFmUser
+    lastFmUser       = $LastFmUser
 }
 $global:lastStatus = $null
 $global:previousEncoding = [Console]::OutputEncoding

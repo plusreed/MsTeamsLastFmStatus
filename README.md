@@ -11,7 +11,7 @@ Sets your Microsoft Teams status message to your currently scrobbling track on L
 Install-Module Microsoft.Graph.Beta -Scope CurrentUser
 # either set LAST_FM_API_KEY in your environment variables, or:
 $env:LAST_FM_API_KEY = "your_api_key_here"
-.\LastFmStatus.ps1
+.\LastFmStatus.ps1 -LastFmUser "plusreed"
 ```
 
 ## Dependencies

@@ -23,7 +23,9 @@
 
 param(
     [Parameter(Mandatory = $true)]
-    [string]$LastFmUser
+    [string]$LastFmUser,
+    [Parameter(Mandatory = $false)]
+    [int32]$SleepTime = 10
 )
 
 Import-Module Microsoft.Graph.Beta.Users.Actions
@@ -36,7 +38,9 @@ if ($nul -eq $env:LAST_FM_API_KEY) {
 
 $consts = @{
     # how often to check for a new track (in seconds)
-    sleepTime        = 10
+    sleepTime        = $SleepTime
+
+    apiUrl           = "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user={0}&api_key={1}&format=json&limit=1"
 
     # {0} = track name
     # {1} = artist name
@@ -73,9 +77,10 @@ $meId = $me['id']
 Write-Debug "$(Get-CurrentTime)`tyour user ID: $meId"
 
 Function Get-LastFmNowPlaying {
-    $lastFmApiReq = Invoke-RestMethod -Uri "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=$($consts.lastFmUser)&api_key=$($env:LAST_FM_API_KEY)&format=json&limit=1"
-    # lastfm returns in json. we want to get the first track in the array
-    $track = $lastFmApiReq.recenttracks.track[0]
+    $lastFmApiReq = Invoke-WebRequest -Uri ($consts.apiUrl -f $consts.lastFmUser, $env:LAST_FM_API_KEY)
+    $lastfmApiReqContent = [System.Text.Encoding]::UTF8.GetString($lastFmApiReq.Content.ToCharArray()) | ConvertFrom-Json
+
+    $track = $lastFmApiReqContent.recenttracks.track[0]
 
     # is this a now playing track?
     if ($track.'@attr'.nowplaying -eq $true) {

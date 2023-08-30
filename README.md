@@ -11,7 +11,8 @@ Sets your Microsoft Teams status message to your currently scrobbling track on L
 Install-Module Microsoft.Graph.Beta -Scope CurrentUser
 # either set LAST_FM_API_KEY in your environment variables, or:
 $env:LAST_FM_API_KEY = "your_api_key_here"
-.\LastFmStatus.ps1 -LastFmUser "plusreed"
+.\LastFmStatus.ps1 -LastFmUser "plusreed" # -SleepTime <int32> to adjust the Last.fm API polling rate. Default is 10.
+# Press Ctrl + C to end the script and disconnect from Microsoft Graph.
 ```
 
 ## Dependencies
